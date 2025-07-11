@@ -1,0 +1,284 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard">
+  <!-- Header -->
+  <header class="dashboard-header">
+    <h1>Welcome back, {{ username }}! 🎯</h1>
+    <div class="header-actions">
+      <button id="exportBtn" class="btn-secondary">
+        <i class="fas fa-download"></i> Export CSV
+      </button>
+      <a href="{{ url_for('logout') }}" class="btn-secondary">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    </div>
+  </header>
+
+  <!-- Dashboard Grid -->
+  <div class="dashboard-grid">
+    <!-- TASKS -->
+    <div class="card task-section">
+      <h2><i class="fas fa-tasks"></i> Tasks</h2>
+      <form id="taskForm" class="task-form">
+        <div class="form-row">
+          <input type="text" id="taskName" placeholder="Task name" required>
+          <select id="taskType" required>
+            <option value="">Type</option>
+            <option value="Subject">📚 Subject</option>
+            <option value="Practice">✏️ Practice</option>
+            <option value="Certification">🏆 Certification</option>
+            <option value="Custom">⭐ Custom</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <input type="date" id="taskDate" placeholder="Start date" required min="">
+          <input type="date" id="taskDeadline" placeholder="Deadline" required min="">
+          <input type="number" id="taskHours" placeholder="Hours" min="1" required>
+          <select id="taskDifficulty" required>
+            <option value="">Difficulty</option>
+            <option value="1">Easy</option>
+            <option value="2">Medium</option>
+            <option value="3">Hard</option>
+            <option value="4">Expert</option>
+            <option value="5">Master</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-primary">Add Task</button>
+      </form>
+
+      <div class="task-progress-container card">
+        <h2><i class="fas fa-tasks"></i> Task Progress</h2>
+        <div class="task-progress-bar">
+          <div class="task-progress-fill" id="taskProgressFill" style="width: 0%"></div>
+        </div>
+        <p class="task-progress-text" id="taskProgressText">0 of 0 tasks completed</p>
+      </div>
+
+      <div id="taskList" class="task-list"></div>
+    </div>
+
+    <!-- Pomodoro Timer -->
+    <div class="card pomodoro-section">
+      <h2><i class="fas fa-clock"></i> Pomodoro Timer</h2>
+      <div class="pomodoro-timer">
+        <div class="timer-display">
+          <div id="timerTime">25:00</div>
+          <div id="timerLabel">Focus Time</div>
+        </div>
+        <div class="timer-controls">
+          <button id="startBtn" class="btn-primary">Start</button>
+          <button id="pauseBtn" class="btn-secondary">Pause</button>
+          <button id="resetBtn" class="btn-secondary">Reset</button>
+        </div>
+        <div class="timer-progress">
+          <div id="timerProgressBar" class="progress-bar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calendar -->
+    <div class="card calendar-section">
+      <h2><i class="fas fa-calendar"></i> Study Calendar</h2>
+      <div id="calendar"></div>
+    </div>
+
+    <!-- Today's Tasks Checkboxes -->
+    <div class="card calendar-section">
+      <h2><i class="fas fa-calendar-day"></i> Today's Tasks ✅</h2>
+      <div id="todayTaskCheckboxes" style="padding: 10px 15px;"></div>
+    </div>
+
+    <!-- Progress Analytics -->
+    <div class="card analytics-section">
+      <h2><i class="fas fa-chart-bar"></i> Progress Analytics</h2>
+      <div class="analytics-panel">
+        <div class="chart-container">
+          <canvas id="progressChart"></canvas>
+          <div class="legend">
+            <span><span class="dot green"></span> Completed</span>
+            <span><span class="dot red"></span> Remaining</span>
+          </div>
+        </div>
+        <div class="stats-container">
+          <div class="stat-box"><div class="stat-value" id="statTasksCompleted">0/0</div><div class="stat-label">Tasks Completed</div></div>
+          <div class="stat-box"><div class="stat-value" id="statHoursCompleted">0h</div><div class="stat-label">Hours Completed</div></div>
+          <div class="stat-box"><div class="stat-value" id="statHoursRemaining">0h</div><div class="stat-label">Hours Remaining</div></div>
+          <div class="stat-box"><div class="stat-value" id="statProgress">0%</div><div class="stat-label">Progress</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daily Analytics -->
+    <div class="card analytics-section">
+      <h2><i class="fas fa-calendar-check"></i> Daily Progress Analytics</h2>
+      <div class="analytics-panel">
+        <div class="chart-container">
+          <canvas id="dailyProgressChart"></canvas>
+          <div class="legend">
+            <span><span class="dot green"></span> Completed</span>
+            <span><span class="dot red"></span> Remaining</span>
+          </div>
+        </div>
+        <div class="stats-container">
+          <div class="stat-box"><div class="stat-value" id="dailyStatTasksCompleted">0/0</div><div class="stat-label">Tasks Completed</div></div>
+          <div class="stat-box"><div class="stat-value" id="dailyStatHoursCompleted">0h</div><div class="stat-label">Hours Completed</div></div>
+          <div class="stat-box"><div class="stat-value" id="dailyStatHoursRemaining">0h</div><div class="stat-label">Hours Remaining</div></div>
+          <div class="stat-box"><div class="stat-value" id="dailyStatProgress">0%</div><div class="stat-label">Progress</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Key Points -->
+<div class="card keypoints-section">
+  <h2><i class="fas fa-lightbulb"></i> Key Points</h2>
+  <div class="form-row">
+    <input type="text" id="keyPointInput" placeholder="Write your key point..." />
+    <button id="addKeyPointBtn" class="btn-primary">Save</button>
+  </div>
+  <ul id="keyPointsList" class="keypoint-list"></ul>
+</div>
+
+<!-- StudyBot Assistant -->
+<div id="studybot" class="studybot">
+    <div class="studybot-toggle" onclick="toggleStudyBot()" title="Chat with StudyBot">
+        🤖
+    </div>
+    <div class="studybot-chat" style="display: none;">
+        <div class="studybot-header">
+            <h4>StudyBot AI Assistant</h4>
+            <div class=""chat-actions">
+                <button id="studybotClear" title="Clear Chat🧹">🧹</button>
+                <button class="studybot-close" onclick="closeStudyBot()">⚔️</button>
+            </div>
+            
+        </div>
+        <div class="studybot-messages" id="studybotMessages"></div>
+        <div id="typingIndicator" style="display: none;">
+        <span>StudyBot is typing<span class="dots"></span></span>
+        </div>
+
+        <div class="studybot-input">
+            <input type="text" id="studybotInput" placeholder="Ask me anything..." />
+            <button id="studybotSend">Send</button>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="{{ url_for('static', filename='js/studybot.js') }}"></script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+<script src="{{ url_for('static', filename='js/pomodoro.js') }}"></script>
+
+<!-- Key Points Script -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    fetchKeyPoints();
+
+    document.getElementById("addKeyPointBtn").addEventListener("click", async () => {
+      const input = document.getElementById("keyPointInput");
+      const content = input.value.trim();
+      if (!content) return;
+
+      const res = await fetch("/api/keypoints", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content })
+      });
+
+      if (res.ok) {
+        input.value = "";
+        fetchKeyPoints(); // re-render
+      } else {
+        alert("Error adding key point");
+      }
+    });
+  });
+
+  async function fetchKeyPoints() {
+    const list = document.getElementById("keyPointsList");
+    list.innerHTML = "";
+
+    const res = await fetch("/api/keypoints");
+    const data = await res.json();
+
+    data.forEach(kp => {
+      const li = document.createElement("li");
+
+      const span = document.createElement("span");
+      span.textContent = kp.content;
+
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "Delete";
+      delBtn.addEventListener("click", async () => {
+        const r = await fetch("/api/keypoints", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: kp.id })
+        });
+
+        if (r.ok) fetchKeyPoints();
+        else alert("Error deleting key point");
+      });
+
+      li.appendChild(span);
+      li.appendChild(delBtn);
+      list.appendChild(li);
+    });
+  }
+</script>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById("taskDeadline")?.setAttribute("min", today);
+    document.getElementById("taskDate")?.setAttribute("min", today);
+  });
+</script>
+
+<!-- Key Points Styles -->
+ <style>
+.keypoints-section .form-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.keypoint-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.keypoint-list li {
+  background: #f3f3f3;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.keypoint-list li span {
+  flex: 1;
+  font-weight: 500;
+}
+
+.keypoint-list li button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.keypoint-list li button:hover {
+  background-color: #c0392b;
+}
+</style>
+
+{% endblock %}

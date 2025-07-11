@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{% block title %}PeakPath Study Planner{% endblock %}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <!-- FullCalendar CDN -->
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js'></script>
+
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+
+</head>
+<body data-theme="study">
+    <div class="theme-selector">
+        <select id="themeSelector">
+            <option value="developer">⚙️ Developer Mode</option>
+            <option value="study">🧠 Study Vibes</option>
+            <option value="aesthetic">🌸 Aesthetic</option>
+            <option value="dark">🌑 Dark Mode</option>
+            <option value="minimal">🧪 Minimal</option>
+            
+        </select>
+    </div>
+
+    <main class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                        <div class="flash-message">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ✅ Unified StudyBot block -->
+    <div id="studybot" class="studybot">
+        <div class="studybot-toggle" onclick="toggleStudyBot()" title="Chat with StudyBot">
+            🤖
+        </div>
+        <div class="studybot-chat" style="display: none;">
+            <div class="studybot-header">
+                <h4>StudyBot AI Assistant</h4>
+                <div class=""chat-actions">
+                    <button id="studybotClear" title="Clear Chat🧹">🧹</button>
+                    <button class="studybot-close" onclick="closeStudyBot()">⚔️</button>
+                </div>
+                
+            </div>
+            <div class="studybot-messages" id="studybotMessages"></div>
+            <div id="typingIndicator" style="display: none;">
+            <span>StudyBot is typing<span class="dots"></span></span>
+            </div>
+
+            <div class="studybot-input">
+                <input type="text" id="studybotInput" placeholder="Ask me anything..." />
+                <button id="studybotSend">Send</button>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <!-- JS Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/pomodoro.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/studybot.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+</body>
+</html>
