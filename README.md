@@ -125,3 +125,7 @@ Or switch to `openai.ChatCompletion.create()` if you're using OpenAI.
 
 > “Study smarter, not harder.”
 > This tool was created to bring structure, clarity, and intelligent planning into every student’s life — one task at a time.
+
+# Refreshing GitHub linguist
+
+# Refreshing GitHub linguist
