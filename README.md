@@ -12,18 +12,18 @@ PeakPath is a full-stack AI-driven study planner built with **Flask**, **SQLite*
 
 🚀 Features
 
-| Feature                    | Description                                                    |
-| -------------------------- | -------------------------------------------------------------- |
-| 📋 Task Management         | Add tasks with type, difficulty, and estimated hours           |
-| 📅 Calendar Integration    | FullCalendar integration with automatic task splitting         |
-| 🧠 AI StudyBot             | Powered by LLaMA (via Groq API), answers study-related queries |
-| 📊 Analytics               | See total/completed tasks, hours, and daily progress           |
-| ⏱ Pomodoro Timer           | Classic 25-5 Pomodoro focus tool with animation                |
-| 🌙 Theme Switcher          | Supports aesthetic/dark themes (via `mode.js`)                 |
-| ✨ Overdue Detection       | Red color marking + deadline validation                        |
-| 📌 Key Points              | Save and manage key insights locally                           |
-| 📤 Export to CSV           | Download your tasks instantly                                  |
-| 🔐 \*\*User Authentication | Secure registration and login                                  |
+| Feature                 | Description                                                    |
+| ----------------------- | -------------------------------------------------------------- |
+| 📋 Task Management      | Add tasks with type, difficulty, and estimated hours           |
+| 📅 Calendar Integration | FullCalendar integration with automatic task splitting         |
+| 🧠 AI StudyBot          | Powered by LLaMA (via Groq API), answers study-related queries |
+| 📊 Analytics            | See total/completed tasks, hours, and daily progress           |
+| ⏱ Pomodoro Timer        | Classic 25-5 Pomodoro focus tool with animation                |
+| 🌙 Theme Switcher       | Supports aesthetic/dark themes (via `mode.js`)                 |
+| ✨ Overdue Detection    | Red color marking + deadline validation                        |
+| 📌 Key Points           | Save and manage key insights locally                           |
+| 📤 Export to CSV        | Download your tasks instantly                                  |
+| 🔐 User Authentication  | Secure registration and login                                  |
 
 🛠️ Tech Stack
 
@@ -55,13 +55,16 @@ source venv/bin/activate  # or venv\Scripts\activate on Windows
 pip install -r requirements.txt
 ```
 
-# 4. Setup Environment Variables
+# 🔐 Environment Setup (Groq API Key Required)
 
-Create a `.env` file:
+Before running the app, create a .env file in the project root and add your Groq API key:
 
 ```env
 GROQ_API_KEY=your_groq_key_here
 ```
+
+You can get your free key from: https://console.groq.com/keys
+⚠️ Important: Do NOT commit your .env file or share your key publicly.
 
 # 🧪 Running the App
 
